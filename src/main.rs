@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    input::mouse::MouseMotion
+};
 
 fn main() {
     App::build()
@@ -6,10 +9,12 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_system(rotation.system())
+        .add_system_to_stage(CoreStage::PostUpdate, camera_controls.system())
         .run();
 }
 
 struct Rotator;
+struct Camera;
 
 fn setup(
     mut commands: Commands,
@@ -31,7 +36,8 @@ fn setup(
     commands.spawn_bundle(PerspectiveCameraBundle {
         transform: Transform::from_xyz(-3.0, 2.5, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..Default::default()
-    });
+    })
+    .insert(Camera);
 }
 
 fn rotation(
@@ -40,5 +46,22 @@ fn rotation(
 ) {
     for mut transform in query.iter_mut() {
         transform.rotate(Quat::from_rotation_z(1.0 * time.delta_seconds()));
+    }
+}
+
+fn camera_controls(
+    time: Res<Time>,
+    mut mouse_motion_events: EventReader<MouseMotion>,
+    mut query: Query<&mut Transform, With<Camera>>
+) {
+    let mut x_axis_value = 0.0;
+
+    for event in mouse_motion_events.iter() {
+        x_axis_value += event.delta.x;
+    }
+
+    for mut transform in query.iter_mut() {
+            transform.translation = Mat3::from_rotation_y(x_axis_value * time.delta_seconds()) * transform.translation;
+            transform.look_at(Vec3::ZERO, Vec3::Y);
     }
 }
