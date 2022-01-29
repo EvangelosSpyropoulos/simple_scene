@@ -4,16 +4,19 @@ use bevy::{
 };
 
 fn main() {
-    App::build()
+    App::new()
         .insert_resource(Msaa {samples: 4})
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup.system())
-        .add_system(rotation.system())
-        .add_system_to_stage(CoreStage::PostUpdate, camera_controls.system())
+        .add_startup_system(setup)
+        .add_system(rotation)
+        .add_system_to_stage(CoreStage::PostUpdate, camera_controls)
         .run();
 }
 
+#[derive(Component)]
 struct Rotator;
+
+#[derive(Component)]
 struct Camera;
 
 fn setup(
@@ -47,7 +50,7 @@ fn setup(
         ..Default::default()
     });
     
-    commands.spawn_bundle(LightBundle {
+    commands.spawn_bundle(PointLightBundle {
         transform: Transform::from_xyz(5.0, 4.0, 2.0),
         ..Default::default()
     });
