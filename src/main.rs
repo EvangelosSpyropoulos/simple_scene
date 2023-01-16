@@ -24,13 +24,13 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.spawn_bundle(PbrBundle {
+    commands.spawn(PbrBundle {
         mesh: meshes.add(Mesh::from(shape::Plane{size: 30.0})),
         material: materials.add(Color::GRAY.into()),
         ..Default::default()
     });
 
-    commands.spawn_bundle(PbrBundle {
+    commands.spawn(PbrBundle {
         transform: Transform::from_xyz(0.0, 0.5, 0.0),
         mesh: meshes.add(Mesh::from(shape::Cube{size: 1.0})),
         material: materials.add(Color::rgb(0.0, 0.7, 0.8).into()),
@@ -38,7 +38,7 @@ fn setup(
     })
     .insert(Rotator);
     
-    commands.spawn_bundle(PbrBundle {
+    commands.spawn(PbrBundle {
         transform: Transform::from_xyz(3.0, 1.0, -4.0),
         mesh: meshes.add(Mesh::from(shape::Torus {
             radius: 1.0,
@@ -50,12 +50,12 @@ fn setup(
         ..Default::default()
     });
     
-    commands.spawn_bundle(PointLightBundle {
+    commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(5.0, 4.0, 2.0),
         ..Default::default()
     });
     
-    commands.spawn_bundle(Camera3dBundle {
+    commands.spawn(Camera3dBundle {
         transform: Transform::from_xyz(0.0, 6.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..Default::default()
     })
