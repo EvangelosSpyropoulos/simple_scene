@@ -5,11 +5,13 @@ use bevy::{
 
 fn main() {
     App::new()
-        .insert_resource(Msaa {samples: 4})
+        .insert_resource(Msaa::Sample4)
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
-        .add_system(rotation)
-        .add_system_to_stage(CoreStage::PostUpdate, camera_controls)
+        .add_systems((
+            rotation,
+            camera_controls.in_base_set(CoreSet::PostUpdate)
+        ))
         .run();
 }
 
@@ -25,7 +27,7 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane{size: 30.0})),
+        mesh: meshes.add(Mesh::from(shape::Plane::from_size(30.0))),
         material: materials.add(Color::GRAY.into()),
         ..Default::default()
     });
